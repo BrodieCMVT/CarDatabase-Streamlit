@@ -12,14 +12,16 @@ with col1:
     car = st.text_input('Car Search:')
 with col2:
     cylinders = st.number_input('Cylinder Count:', min_value=3, max_value=8, step=1)
-
-query2 = 'Cylinders == '+str(cylinders)
-
+    cylcheck = st.checkbox('Enable?')
 st.subheader('Data:')
 df = pd.DataFrame(cars)
 if cylinders:
-    df = df[(df['Cylinders']==cylinders)]
-    if car:
-        df = df[(df['Car'].str.contains(car)) & (df['Cylinders']==cylinders)]
+    if cylcheck:
+        df = df[(df['Cylinders']==int(cylinders))]
+        if car:
+            df = df[(df['Car'].str.contains(car.lower()) | df['Car'].str.contains(car.capitalize())) & (df['Cylinders']==cylinders)]
+    else:
+        if car:
+            df = df[(df['Car'].str.contains(car.lower()) | df['Car'].str.contains(car.title()) | df['Car'].str.contains(car))]
 df = df.head(limit)
 st.dataframe(df)
